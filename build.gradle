@@ -1,0 +1,30 @@
+plugins {
+	id 'java'
+}
+
+group = 'com.solution'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 17
+targetCompatibility = 17
+
+configurations {
+	implementation.canBeResolved = true
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'solution.Main'
+	}
+	from {
+		configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	duplicatesStrategy = 'exclude'
+}
