@@ -37,20 +37,20 @@ public class Main {
             String dateParam = interestedDate.toString().replace("-", "");
             String response = getBankResponse(dateParam);
             var usdRate = extractCurrency(response, USD_CODE);
-            String usdPayload = convertExchangeRateToPayload(usdRate, "USD");
+            String usdPayload = convertExchangeRateToPayload(usdRate, "uah_to_usd_exchange_rate", "USD");
             send(usdPayload);
             var eurRate = extractCurrency(response, EUR_CODE);
-            String eurPayload = convertExchangeRateToPayload(eurRate, "EUR");
+            String eurPayload = convertExchangeRateToPayload(eurRate, "uah_to_eur_exchange_rate", "EUR");
             send(eurPayload);
         }
     }
 
-    private static String convertExchangeRateToPayload(ExchangeRate rate, String currency) {
+    private static String convertExchangeRateToPayload(ExchangeRate rate, String eventName, String currency) {
         return """
                  {
                   "client_id": "%S",
                       "events": [{
-                        "name": "uah_to_eur_exchange_rate",
+                        "name": "%s",
                         "params": {
                           "currency": "%s",
                           "currency_rate": "%s",
@@ -58,7 +58,7 @@ public class Main {
                         }
                       }]
                   }
-                """.formatted(CLIENT_ID, rate.rate(), rate.date());
+                """.formatted(CLIENT_ID, eventName, currency, rate.rate(), rate.date());
     }
 
     private static ExchangeRate extractCurrency(String response, Long currency) {
